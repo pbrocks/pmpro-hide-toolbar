@@ -90,7 +90,7 @@ class Hide_Adminbar_Customizer {
 				// 'type'    => 'checkbox',
 				'type'    => 'ios',
 				'description'   => 'Toggle on or off the Frontend Adminbar for non-admins. Toggle is equivalent to a checkbox.',
-				'priority' => 12,
+				'priority' => 10,
 				)
 		) );
 
@@ -117,19 +117,5 @@ class Hide_Adminbar_Customizer {
 			    ),
 			)
 		) );
-
-		// Textbox control
-		$customizer_additions->add_setting( 'textbox_setting', array(
-			'default'        => 'Default Value',
-		) );
-
-		$customizer_additions->add_control( 'textbox_setting', array(
-			'label'   => 'Text Setting',
-			'section' => 'mysite_section',
-			'type'    => 'text',
-			'priority' => 1,
-		) );
-
 	}
-
 }
