@@ -10,4 +10,5 @@
 
 defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );
 
-include( 'inc/class-customizing-site.php' );
+include( 'inc/class-hide-adminbar-customizer.php' );
+include( 'inc/class-dev-dashboard.php' );

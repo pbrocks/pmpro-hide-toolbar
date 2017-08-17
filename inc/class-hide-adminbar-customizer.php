@@ -2,13 +2,13 @@
 
 defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );
 
-new Customizing_Site();
+new Hide_Adminbar_Customizer();
 
-class Customizing_Site {
+class Hide_Adminbar_Customizer {
 
 	public function __construct() {
 		add_action( 'customize_register', array( $this, 'site_customizer_manager' ) );
-		// add_action( 'init', array( $this, 'habfna_disable_admin_bar' ), 9 );
+		add_action( 'init', array( $this, 'disable_adminbar_on_frontend' ), 9 );
 	}
 
 	/**
@@ -23,13 +23,13 @@ class Customizing_Site {
 		}
 	}
 	/**
-	 * [habfna_disable_admin_bar description]
+	 * [disable_adminbar_on_frontend description]
 	 *
 	 * @param  [type] [description]
 	 * @return [type]             [description]
 	 */
-	public function habfna_disable_admin_bar() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+	public function disable_adminbar_on_frontend() {
+		if ( ! current_user_can( 'manage_options' ) && '' === get_option( 'show_admin_bar_on_frontend' ) ) {
 			add_filter( 'show_admin_bar', '__return_false' );
 			add_action( 'admin_enqueue_scripts', 'hide_admin_bar_in_edit_user_settings' );
 		}
@@ -71,6 +71,7 @@ class Customizing_Site {
 		$customizer_additions->add_setting( 'show_admin_bar_on_frontend', array(
 			'default'        => true,
 			'type'           => 'option',
+			// 'type'           => 'option',
 			'transport'      => 'refresh',
 		) );
 
