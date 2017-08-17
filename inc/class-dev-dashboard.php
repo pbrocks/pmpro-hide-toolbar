@@ -35,12 +35,23 @@ class Dev_Dashboard {
 			echo '<br>';
 			echo '</pre>';
 
-			echo '<pre><h2>This is the Menu</h2>';
-			print_r( $menu );
+			$user_roles = get_option( 'wp_user_roles' );
+
+			wp_dropdown_roles();
+			wp_dropdown_roles( $selected );
+
+			echo '<pre><h2>This is the User Roles</h2>';
+			// print_r( $user_roles );
 			echo '</pre>';
 
-			echo '<pre><h2>This is the Submenu</h2>';
-			print_r( $submenu );
+			$theme_mods = get_theme_mods();
+			// $minimum_user_role = get_theme_mod( 'minimum_user_role' );
+			$minimum_user_role1 = get_option( 'minimum_user_role' );
+			echo '<pre><h2>This is the theme_mods</h2>';
+			// remove_theme_mod( 'minimum_user_role' );
+			echo $minimum_user_role1 . '<br>';
+			echo $minimum_user_role . '<br>';
+			print_r( $theme_mods );
 			echo '</pre>';
 	}
 }

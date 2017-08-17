@@ -29,10 +29,20 @@ class Hide_Adminbar_Customizer {
 	 * @return [type]             [description]
 	 */
 	public function disable_adminbar_on_frontend() {
-		if ( ! current_user_can( 'manage_options' ) && '' === get_option( 'show_admin_bar_on_frontend' ) ) {
+		if ( ! current_user_can( get_option( 'minimum_user_role' ) ) && '' === get_option( 'show_admin_bar_on_frontend' ) ) {
 			add_filter( 'show_admin_bar', '__return_false' );
 			add_action( 'admin_enqueue_scripts', 'hide_admin_bar_in_edit_user_settings' );
 		}
+	}
+	/**
+	 * [disable_adminbar_on_frontend description]
+	 *
+	 * @param  [type] [description]
+	 * @return [type]             [description]
+	 */
+	public function dropdown_for_adminbar_user_role() {
+		$dropdown = wp_dropdown_roles( $selected );
+		return $dropdown;
 	}
 
 	/**
@@ -53,78 +63,61 @@ class Hide_Adminbar_Customizer {
 	 * @return Void
 	 */
 	private function panel_creation( $customizer_additions ) {
-		// $customizer_additions->add_panel(
-		// 'mysite_panel', array(
-		// 'title'       => 'Site Panel',
-		// 'label'       => 'Site Panel',
-		// 'description' => 'This is a description of this mysite panel',
-		// 'priority'    => 10,
-		// )
-		// );
-		// Checkbox control
 		$customizer_additions->add_section( 'mysite_section', array(
 			'title'          => 'MySite Custom Controls',
 			'description'    => 'MySite Custom Controls was created specifically to be included in the Hide Adminbar Plugin, but likely won\'t be used.',
 			'priority'       => 35,
 		) );
 
+		/**
+		 * Adding a Checkbox Toggle
+		 */
+		if ( ! class_exists( 'Customizer_Toggle_Control' ) ) {
+			require_once dirname( __FILE__ ) . '/controls/checkbox/toggle-control.php';
+		}
+
 		$customizer_additions->add_setting( 'show_admin_bar_on_frontend', array(
 			'default'        => true,
 			'type'           => 'option',
-			// 'type'           => 'option',
+			// 'type'           => 'theme_mod',
 			'transport'      => 'refresh',
 		) );
 
-		$customizer_additions->add_control( 'show_admin_bar_on_frontend', array(
-			'label'   => 'Show adminbar on frontend for non-admins',
-			// 'section' => 'title_tagline',
-			'section' => 'mysite_section',
-			'type'    => 'checkbox',
-			'priority' => 72,
+		$customizer_additions->add_control( new Customizer_Toggle_Control( $customizer_additions,'show_admin_bar_on_frontend', array(
+				'label'   => 'Toggle Frontend Adminbar',
+				'section' => 'mysite_section',
+				'settings'   => 'show_admin_bar_on_frontend',
+				// 'type'    => 'checkbox',
+				'type'    => 'ios',
+				'description'   => 'Toggle on or off the Frontend Adminbar for non-admins. Toggle is equivalent to a checkbox.',
+				'priority' => 12,
+				)
 		) );
 
-		// $customizer_additions->add_section(
-		// 'mysite_section', array(
-		// 'title'          => 'Site Section',
-		// 'label'          => 'Site Panel',
-		// 'description'    => 'Description of the mysite Section of the Site panel',
-		// 'priority'       => 35,
-		// 'panel'          => 'mysite_panel',
-		// )
-		// );
-		// /**
-		// * Adding a Checkbox Toggle
-		// */
-		// $customizer_additions->add_setting( 'show_mysite_alert', array(
-		// 'default'        => false,
-		// 'transport' => 'refresh',
-		// ) );
-		// $customizer_additions->add_control( array(
-		// 'label'   => 'Show Front Alert Message',
-		// 'description'   => 'Show Front Alert Message => slide to turn on setting. Toggle is equivalent to a checkbox.',
-		// 'settings'   => 'show_mysite_alert',
-		// 'section' => 'mysite_section',
-		// 'type'    => 'checkbox',
-		// 'priority' => 1,
-		// ) );
-		// /**
-		// * Textbox control
-		// */
-		// $customizer_additions->add_setting(
-		// 'date_of_alert', array(
-		// 'default'      => date( 'l jS F Y' ),
-		// )
-		// );
-		// $customizer_additions->add_control(
-		// array(
-		// 'section'  => 'mysite_section',
-		// 'settings'   => 'date_of_alert',
-		// 'type'     => 'text',
-		// 'label'       => 'Date of Alert',
-		// 'description' => 'Effetive date for this alert or announcement.',
-		// 'priority' => 1,
-		// )
-		// );
+		$customizer_additions->add_setting( 'minimum_user_role', array(
+			'default'        => 'read',
+			'type'           => 'option',
+			'transport'      => 'refresh',
+		) );
+
+		$customizer_additions->add_control( new WP_Customize_Control(
+		 $customizer_additions,
+		 'minimum_user_role',
+		 array(
+			    'label'      => __( 'Select User Role' ), 
+			    'description' => __( 'Using this option you can change the theme colors' ),
+			    'priority'   => 10,
+				'section' => 'mysite_section',
+			    'type'    => 'select',
+			    'choices' => array(
+			        'edit_posts' => 'Subscriber',
+			        'publish_posts' => 'Contributor',
+			        'edit_pages' => 'Author',
+			        'manage_options' => 'Editor',
+			    ),
+			)
+		) );
+
 		// Textbox control
 		$customizer_additions->add_setting( 'textbox_setting', array(
 			'default'        => 'Default Value',
