@@ -29,7 +29,7 @@ class Hide_Adminbar_Customizer {
 	 * @return [type]             [description]
 	 */
 	public function disable_adminbar_on_frontend() {
-		if ( ! current_user_can( get_option( 'minimum_user_role' ) ) && '' === get_option( 'show_admin_bar_on_frontend' ) ) {
+		if ( ! current_user_can( get_option( 'minimum_user_role' ) ) && '1' !== get_option( 'show_admin_bar_on_frontend' ) ) {
 			add_filter( 'show_admin_bar', '__return_false' );
 			add_action( 'admin_enqueue_scripts', 'hide_admin_bar_in_edit_user_settings' );
 		}
@@ -100,6 +100,20 @@ class Hide_Adminbar_Customizer {
 			'transport'      => 'refresh',
 		) );
 
+		$user_roles = get_option( 'wp_user_roles' );
+		$user_role_choices = array();
+		foreach($user_roles as $top_role => $top_capabilities){
+			foreach($top_capabilities['capabilities'] as $mid_capability_name => $mid_capability_value){
+				foreach($user_roles as $low_role => $low_capabilities){
+					if(!$mid_capability_value || (count($top_capabilities)>count($low_capabilities)&&$low_capabilities[$mid_capability_name]==true)){
+						break 2;
+					}
+				}
+				$user_role_choices[$mid_capability_name]=$top_role;
+				break;
+			}
+		}
+
 		$customizer_additions->add_control( new WP_Customize_Control(
 		 $customizer_additions,
 		 'minimum_user_role',
@@ -109,12 +123,7 @@ class Hide_Adminbar_Customizer {
 			    'priority'   => 10,
 				'section' => 'mysite_section',
 			    'type'    => 'select',
-			    'choices' => array(
-			        'edit_posts' => 'Subscriber',
-			        'publish_posts' => 'Contributor',
-			        'edit_pages' => 'Author',
-			        'manage_options' => 'Editor',
-			    ),
+			    'choices' => $user_role_choices,
 			)
 		) );
 
