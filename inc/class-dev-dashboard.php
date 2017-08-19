@@ -36,6 +36,7 @@ class Dev_Dashboard {
 			echo '</pre>';
 
 			$user_roles = get_option( 'wp_user_roles' );
+			//var_dump($user_roles);
 
 			wp_dropdown_roles();
 			wp_dropdown_roles( $selected );
@@ -53,5 +54,21 @@ class Dev_Dashboard {
 			echo $minimum_user_role . '<br>';
 			print_r( $theme_mods );
 			echo '</pre>';
+			echo '<h2>array stuff</h2>';
+			
+			$user_roles = get_option( 'wp_user_roles' );
+			$user_role_choices = array();
+			foreach($user_roles as $top_role => $top_capabilities){
+				foreach($top_capabilities['capabilities'] as $mid_capability_name => $mid_capability_value){
+					foreach($user_roles as $low_role => $low_capabilities){
+						if(!$mid_capability_value || (count($top_capabilities)>count($low_capabilities)&&$low_capabilities[$mid_capability_name]==true)){
+							break 2;
+						}
+					}
+					$user_role_choices[$mid_capability_name]=$top_role;
+					break;
+				}
+			}
+			var_dump($user_role_choices);
 	}
 }
