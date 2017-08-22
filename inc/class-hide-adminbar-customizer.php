@@ -128,9 +128,3 @@ class Hide_Adminbar_Customizer {
 		) );
 	}
 }
-
-function boopyboop($user_role_choices){
-	$user_role_choices['boopy']='boop';
-	return $user_role_choices;
-}
-add_filter('pmpha_user_roles', 'boopyboop');
