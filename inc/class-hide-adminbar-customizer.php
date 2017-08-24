@@ -100,19 +100,19 @@ class Hide_Adminbar_Customizer {
 			'transport'      => 'refresh',
 		) );
 
-		$user_roles = get_option( 'wp_user_roles' );
-		$user_role_choices = array();
-		foreach($user_roles as $top_role => $top_capabilities){
-			foreach($top_capabilities['capabilities'] as $mid_capability_name => $mid_capability_value){
-				foreach($user_roles as $low_role => $low_capabilities){
-					if(!$mid_capability_value || (count($top_capabilities)>count($low_capabilities)&&$low_capabilities[$mid_capability_name]==true)){
-						break 2;
-					}
-				}
-				$user_role_choices[$mid_capability_name]=$top_role;
-				break;
-			}
-		}
+		$user_role_choices = array(
+ 			'edit_posts' => 'Subscriber',
+ 			'publish_posts' => 'Contributor',
+ 			'edit_pages' => 'Author',
+ 			'manage_options' => 'Editor');
+ 		/**
+		 * Filter to add user roles
+		 *
+		 * @since 2.0
+		 *
+		 * @param array $user_role_choices Array of user roles. Each element in array should be [capability=>role_name].	 
+		 */
+		$user_role_choices = apply_filters('pmpha_user_roles', $user_role_choices);
 
 		$customizer_additions->add_control( new WP_Customize_Control(
 		 $customizer_additions,
