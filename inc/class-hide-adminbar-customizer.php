@@ -120,6 +120,28 @@ class Hide_Toolbar_Customizer {
 			'transport'      => 'refresh',
 		) );
 
+		$customizer_additions->add_control( new WP_Customize_Control(
+		 $customizer_additions,
+		 'minimum_user_role',
+		 array(
+			    'label'      => __( 'Select User Role' ), 
+			    'description' => __( 'Using this option you can select the minimum level necessary to view the toolbar on the frontend. To add more roles, add to the \'pmpha_user_roles\' filter.' ),
+			    'priority'   => 10,
+				'section' => 'hide_toolbar_section',
+			    'type'    => 'select',
+			    'choices' => $this->get_user_role_choices(),
+			)
+		) );
+	}
+
+	/**
+	 * [get_user_role_choices description]
+	 *
+	 * @param  [type] $customizer_additions [description]
+	 * @return [type]             [description]
+	 */
+	public function get_user_role_choices() {
+
 		$user_role_choices = array(
  			'edit_posts' => 'Subscriber',
  			'publish_posts' => 'Contributor',
@@ -132,19 +154,7 @@ class Hide_Toolbar_Customizer {
 		 *
 		 * @param array $user_role_choices Array of user roles. Each element in array should be [capability=>role_name].	 
 		 */
-		$user_role_choices = apply_filters('pmpha_user_roles', $user_role_choices);
-
-		$customizer_additions->add_control( new WP_Customize_Control(
-		 $customizer_additions,
-		 'minimum_user_role',
-		 array(
-			    'label'      => __( 'Select User Role' ), 
-			    'description' => __( 'Using this option you can change the theme colors' ),
-			    'priority'   => 10,
-				'section' => 'hide_toolbar_section',
-			    'type'    => 'select',
-			    'choices' => $user_role_choices,
-			)
-		) );
+		return apply_filters('pmpha_user_roles', $user_role_choices);
 	}
+
 }
