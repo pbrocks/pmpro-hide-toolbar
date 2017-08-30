@@ -18,7 +18,7 @@ class Hide_Toolbar_Customizer {
 	 */
 	public function hide_toolbar_in_edit_user_settings() {
 		$current_screen = get_current_screen();
-		if ( 'profile' === $current_screen->id || 'user-edit' === $current_screen->id) {
+		if ( 'profile' === $current_screen->id || 'user-edit' === $current_screen->id ) {
 			wp_enqueue_style( 'hide-profile-toolbar-option', plugins_url( '/css/hide-profile-toolbar-option.css', __FILE__ ) );
 		}
 	}
@@ -121,15 +121,15 @@ class Hide_Toolbar_Customizer {
 		) );
 
 		$customizer_additions->add_control( new WP_Customize_Control(
-		 $customizer_additions,
-		 'minimum_user_role',
-		 array(
-			    'label'      => __( 'Select User Role' ), 
-			    'description' => __( 'Using this option you can select the minimum level necessary to view the toolbar on the frontend. To add more roles, add to the \'pmpha_user_roles\' filter.' ),
-			    'priority'   => 10,
+			$customizer_additions,
+			'minimum_user_role',
+			array(
+				'label'      => __( 'Select User Role' ),
+				'description' => __( 'Using this option you can select the minimum level necessary to view the toolbar on the frontend. To add more roles, add to the \'pmpha_user_roles\' filter.' ),
+				'priority'   => 10,
 				'section' => 'hide_toolbar_section',
-			    'type'    => 'select',
-			    'choices' => $this->get_user_role_choices(),
+				'type'    => 'select',
+				'choices' => $this->get_user_role_choices(),
 			)
 		) );
 	}
@@ -143,18 +143,35 @@ class Hide_Toolbar_Customizer {
 	public function get_user_role_choices() {
 
 		$user_role_choices = array(
- 			'edit_posts' => 'Subscriber',
- 			'publish_posts' => 'Contributor',
- 			'edit_pages' => 'Author',
- 			'manage_options' => 'Editor');
- 		/**
+			'edit_posts' => 'Subscriber',
+			'publish_posts' => 'Contributor',
+			'edit_pages' => 'Author',
+			'manage_options' => 'Editor',
+		);
+
+		 /**
 		 * Filter to add user roles
 		 *
 		 * @since 2.0
 		 *
-		 * @param array $user_role_choices Array of user roles. Each element in array should be [capability=>role_name].	 
+		 * @param array $user_role_choices Array of user roles. Each element in array should be [capability=>role_name].
 		 */
-		return apply_filters('pmpha_user_roles', $user_role_choices);
+		return apply_filters( 'pmpha_user_roles', $user_role_choices );
 	}
 
+	/**
+	 * [check_for_membership_manager description]
+	 *
+	 * @param  [type] $customizer_additions [description]
+	 * @return [type]             [description]
+	 */
+	public function check_for_membership_manager( $user_role_choices ) {
+		$add_membership_manager = array(
+			'pmpro_edit_memberships' => 'Membership Manager',
+		);
+		if ( get_role( 'pmpro_membership_manager' ) ) {
+			$user_role_choices = array_merge( $user_role_choices, $add_membership_manager );
+		}
+		return $user_role_choices;
+	}
 }
