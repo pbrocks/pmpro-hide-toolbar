@@ -169,6 +169,17 @@ class Hide_Toolbar_Customizer {
 		 */
 		return apply_filters( 'pmpha_user_roles', $user_role_choices );
 	}
+	/**
+	 * Hide for Subscribers only
+	 *
+	 * @return [type] [description]
+	 */
+	public function check_for_subscriber_and_hide() {
+		// global $current_user, $wpadminbar;
+		// if ( ! current_user_can( 'publish_posts' ) ) {
+		// add_filter( 'show_toolbar', '__return_false' );
+		// }
+	}
 
 	/**
 	 * [check_for_membership_manager description]
